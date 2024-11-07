@@ -1,0 +1,65 @@
+﻿@model Instagram.ViewModels.EditViewModel
+
+@{
+    ViewBag.Title = "Edit Profile";
+}
+
+<div class="bg-dark text-center pt-5 pb-4">
+    <h3 class="text-white mb-5">Fill out the form to edit your account details</h3>
+    <form asp-action="Edit" asp-controller="Account" asp-anti-forgery="true">
+        <div asp-validation-summary="ModelOnly" class="text-error"></div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="text" class="form-control" asp-for="UserName" placeholder="Enter your login...">
+                <span asp-validation-for="UserName" class="text-error" />
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="text" class="form-control" asp-for="Name" placeholder="Enter your name...">
+                <p class="text-center text-secondary">Not required to fill out</p>
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="email" class="form-control" asp-for="Email" placeholder="Enter your email address...">
+                <span asp-validation-for="Email" class="text-error" />
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="text" class="form-control" asp-for="PhoneNumber" placeholder="Enter your phone number...">
+                <p class="text-center text-secondary">Not required to fill out</p>
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="text" class="form-control" asp-for="Avatar" placeholder="Enter link to your avatar...">
+                <span asp-validation-for="Avatar" class="text-error" />
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <textarea asp-for="AboutUser" type="text" class="form-control" placeholder="Tell us about yourself..." rows="3"></textarea>
+                <p class="text-center text-secondary">Not required to fill out</p>
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="text" class="form-control" asp-for="Gender" placeholder="Enter your gender...">
+                <p class="text-center text-secondary">Not required to fill out</p>
+            </label>
+        </div>
+        <div class="form_row mb-3">
+            <label for="" class="col-4">
+                <input type="password" class="form-control" asp-for="Password" placeholder="Enter password...">
+                <span asp-validation-for="Password" class="text-error" />
+            </label>
+        </div>
+        <button type="submit" class="btn btn-outline-light mb-3 w-25">Save</button>
+    </form>
+</div>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

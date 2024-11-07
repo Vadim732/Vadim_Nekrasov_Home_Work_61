@@ -103,6 +103,62 @@ public class AccountController : Controller
         return View(model);
     }
     
+    [HttpGet]
+    public async Task<IActionResult> Edit()
+    {
+        User user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            var model = new EditViewModel
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Avatar = user.Avatar,
+                Name = user.Name,
+                AboutUser = user.AboutUser,
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender
+            };
+            
+            return View(model);
+        }
+        
+        return RedirectToAction("Login", "Account");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            User user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.Avatar = model.Avatar;
+                user.Name = model.Name;
+                user.AboutUser = model.AboutUser;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Gender = model.Gender;
+
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Profile");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+        }
+    
+        return View(model);
+    }
+
+    
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();

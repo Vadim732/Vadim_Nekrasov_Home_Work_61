@@ -24,3 +24,8 @@ body {
 .text-error {
   color: #ff1c1c;
 }
+
+.avatar-block{
+  width: 9.8em;
+  height: 9.8em;
+}
