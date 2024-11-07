@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.text-error {
+  color: #ff1c1c;
+}

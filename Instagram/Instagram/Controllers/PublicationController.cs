@@ -14,4 +14,9 @@ public class PublicationController : Controller
         _context = context;
         _userManager = userManager;
     }
+
+    public async Task<IActionResult> Index()
+    {
+        return View();
+    }
 }
