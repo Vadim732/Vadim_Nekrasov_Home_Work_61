@@ -1,0 +1,26 @@
+﻿@model User
+
+@{
+    ViewBag.Title = "User profile";
+}
+
+@* Нереализованный профиль *@
+
+<table class="table">
+    <thead class="table-dark">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>@Model.UserName</td>
+        <td>@Model.Email</td>
+        <td>
+            <a class="btn btn-outline-danger" asp-controller="Account" asp-action="Logout">Logout</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
