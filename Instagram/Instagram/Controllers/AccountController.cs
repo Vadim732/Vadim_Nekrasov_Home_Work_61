@@ -19,18 +19,6 @@ public class AccountController : Controller
         _context = context;
     }
     
-    public async Task<IActionResult> Profile()
-    {
-        User user = await _userManager.GetUserAsync(User);
-        if (user != null)
-        {
-            return View(user);
-        }
-
-        return RedirectToAction("Login", "Account");
-    }
-    
-
     [HttpGet]
     public IActionResult Register()
     {
@@ -146,7 +134,7 @@ public class AccountController : Controller
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Profile");
+                    return RedirectToAction("Profile", "Publication");
                 }
                 foreach (var error in result.Errors)
                 {

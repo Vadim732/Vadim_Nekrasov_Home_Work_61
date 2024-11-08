@@ -1,7 +1,28 @@
-﻿@model Publication
+﻿@model List<Publication>
 
 @{
-    ViewBag.Title = "Main page - list publication";
+    ViewBag.Title = "Main page - Post list";
 }
 
-<h2>title</h2>
+@foreach (var a in Model)
+{
+    <div class="card my-3">
+        <div class="card-header">
+            <h5 class="card-title">@a.User.UserName</h5>
+        </div>
+        <img src="@a.Image" class="card-img-top" alt="Publication image">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+                <button class="btn btn-light me-2">
+                    <i class="bi bi-heart"></i> @a.LikeCount
+                </button>
+                <button class="btn btn-light">
+                    <i class="bi bi-chat"></i> @a.CommentCount
+                </button>
+            </div>
+            
+            <p class="card-text">@a.Description</p>
+            <small class="text-muted">Created: @a.CreatedAt.ToString("dd MMM yyyy")</small>
+        </div>
+    </div>
+}

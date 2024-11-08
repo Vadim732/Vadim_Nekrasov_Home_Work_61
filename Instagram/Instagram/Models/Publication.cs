@@ -4,11 +4,16 @@ namespace Instagram.Models;
 
 public class Publication
 {
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string? Image { get; set; }
     [Required]
     public string Description { get; set; }
     
-    public int? NumberLikesId { get; set; }
-    public Like? NumberLikes { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public int LikeCount { get; set; } = 0;
+    public int CommentCount { get; set; } = 0;
+    public int UserId { get; set; }
+    public User? User { get; set; }
+    public ICollection<Like>? Likes { get; set; } = new List<Like>();
+    public ICollection<Comment>? Comments { get; set; } = new List<Comment>();
 }

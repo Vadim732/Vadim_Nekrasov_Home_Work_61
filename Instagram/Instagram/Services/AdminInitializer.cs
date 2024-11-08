@@ -10,6 +10,7 @@ public class AdminInitializer
         string adminEmail = "admin@admin.admin";
         string adminUserName = "AdminIvanov";
         string adminPassword = "zXcAdmin123$QwEaSd";
+        string adminAvatar = "https://lastfm.freetls.fastly.net/i/u/ar0/3d4d85e22cd52ef84204fcc92c394f11.jpg";
         
         var roles = new [] { "admin", "user" };
         
@@ -20,7 +21,7 @@ public class AdminInitializer
         }
         if (await _userManager.FindByNameAsync(adminEmail) == null)
         {
-            User admin = new User { Email = adminEmail, UserName = adminUserName };
+            User admin = new User { Email = adminEmail, UserName = adminUserName, Avatar = adminAvatar};
             IdentityResult result = await _userManager.CreateAsync(admin, adminPassword);
             if (result.Succeeded)
                 await _userManager.AddToRoleAsync(admin, "admin");
