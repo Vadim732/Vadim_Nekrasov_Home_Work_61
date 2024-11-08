@@ -13,16 +13,17 @@
             <div class="d-flex align-items-center mb-2">
                 <h2 class="me-3">@Model.UserName</h2>
                 <a asp-action="Edit" asp-controller="Account" asp-route-userId="@Model.Id" class="btn btn-outline-secondary">Edit profile</a>
+                <a class="btn btn-outline-danger ml-1" asp-controller="Account" asp-action="Logout">Logout</a>
             </div>
             <div class="d-flex mb-3">
                 <div class="me-4">
-                    <strong>1</strong> publications
+                    <strong>@Model.Publications.Count</strong> publications
                 </div>
                 <div class="me-4">
-                    <strong>1</strong> subscribers
+                    <strong>@Model.FollowersCount</strong> subscribers
                 </div>
                 <div>
-                    <strong>1</strong> subscriptions
+                    <strong>@Model.FollowingCount</strong> subscriptions
                 </div>
             </div>
             <div>

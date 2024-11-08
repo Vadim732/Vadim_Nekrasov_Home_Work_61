@@ -29,6 +29,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Profile">Profile</a>
                         </li>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Index">All users</a>
+                            </li>
+                        }
                     }
                     else
                     {

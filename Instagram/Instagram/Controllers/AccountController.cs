@@ -1,5 +1,6 @@
 ﻿using Instagram.Models;
 using Instagram.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
@@ -17,6 +18,14 @@ public class AccountController : Controller
         _userManager = userManager;
         _signInManager = signInManager;
         _context = context;
+    }
+    
+    [HttpGet]
+    [Authorize(Roles = "admin")]
+    public IActionResult Index()
+    {
+        List<User> users = _userManager.Users.ToList();
+        return View(users);
     }
     
     [HttpGet]
@@ -146,7 +155,36 @@ public class AccountController : Controller
         return View(model);
     }
 
+    [HttpPost]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Delete(int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
     
+        if (user != null)
+        {
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Account");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+        }
+        else
+        {
+            return NotFound();
+        }
+        
+        List<User> users = _userManager.Users.ToList();
+        return View("Index", users);
+    }
+
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
