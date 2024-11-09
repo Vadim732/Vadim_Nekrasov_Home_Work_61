@@ -9,6 +9,14 @@
     <div class="card my-3">
         <div class="card-header">
             <h5 class="card-title">@a.User.UserName</h5>
+            <form asp-action="Follow" method="post">
+                <input type="hidden" name="followingId" value="@a.UserId" />
+                <button type="submit" class="btn btn-primary">Follow</button>
+            </form>
+            <form asp-action="Unfollow" method="post">
+                <input type="hidden" name="followingId" value="@a.UserId" />
+                <button type="submit" class="btn btn-primary">Unfollow</button>
+            </form>
         </div>
         <img src="@a.Image" class="card-img-top" alt="Publication image">
         <div class="card-body">

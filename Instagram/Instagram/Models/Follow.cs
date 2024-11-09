@@ -10,5 +10,5 @@ public class Follow
     public int FollowingId { get; set; }
     public User Following { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

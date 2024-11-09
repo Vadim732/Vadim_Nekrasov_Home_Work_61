@@ -89,5 +89,64 @@ public class PublicationController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Follow(int followingId)
+    {
+        var follower = await _userManager.GetUserAsync(User);
+        if (follower == null || follower.Id == followingId)
+            return BadRequest("Invalid follow request.");
+
+        var following = await _context.Users
+            .Include(u => u.Followers)
+            .FirstOrDefaultAsync(u => u.Id == followingId);
+        if (following == null)
+            return NotFound();
+        if (await _context.Follows.AnyAsync(f => f.FollowerId == follower.Id && f.FollowingId == followingId))
+            return BadRequest("You are already following this user.");
+
+        var follow = new Follow
+        {
+            FollowerId = follower.Id,
+            FollowingId = followingId
+        };
+
+        _context.Follows.Add(follow);
+        follower.FollowingCount++;
+        following.FollowersCount++;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Profile", new { userId = followingId });
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Unfollow(int followingId)
+    {
+        var follower = await _userManager.GetUserAsync(User);
+        if (follower == null || follower.Id == followingId)
+            return BadRequest("Invalid unfollow request.");
+
+        var following = await _context.Users
+            .Include(u => u.Followers)
+            .FirstOrDefaultAsync(u => u.Id == followingId);
+
+        if (following == null)
+            return NotFound();
+        var follow = await _context.Follows
+            .FirstOrDefaultAsync(f => f.FollowerId == follower.Id && f.FollowingId == followingId);
+
+        if (follow == null)
+            return BadRequest("You are not following this user.");
+
+        _context.Follows.Remove(follow);
+        follower.FollowingCount--;
+        following.FollowersCount--;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Profile", new { userId = followingId });
+    }
 
 }
