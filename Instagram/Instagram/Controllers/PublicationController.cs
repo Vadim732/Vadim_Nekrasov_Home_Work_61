@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Instagram.Models;
+﻿using Instagram.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -36,11 +33,7 @@ public class PublicationController : Controller
     
     public async Task<IActionResult> Index()
     {
-        var publications = await _context.Publications
-            .Include(p => p.User)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.User)
-            .ToListAsync();
+        var publications = await _context.Publications.Include(p => p.User).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
 
         return View(publications);
     }
@@ -48,11 +41,7 @@ public class PublicationController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int publicationId)
     {
-        var publication = await _context.Publications
-            .Include(p => p.User)
-            .Include(p => p.Comments)
-            .ThenInclude(c => c.User)
-            .FirstOrDefaultAsync(p => p.Id == publicationId);
+        var publication = await _context.Publications.Include(p => p.User).Include(p => p.Comments).ThenInclude(c => c.User).FirstOrDefaultAsync(p => p.Id == publicationId);
         
         if (publication != null)
         {
@@ -94,9 +83,7 @@ public class PublicationController : Controller
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return RedirectToAction("Login", "Account");
 
-        var publication = await _context.Publications
-            .Include(p => p.Likes)
-            .FirstOrDefaultAsync(p => p.Id == publicationId);
+        var publication = await _context.Publications.Include(p => p.Likes).FirstOrDefaultAsync(p => p.Id == publicationId);
 
         if (publication == null) return NotFound();
 
@@ -123,9 +110,7 @@ public class PublicationController : Controller
         if (follower == null || follower.Id == followingId)
             return BadRequest("Invalid follow request.");
 
-        var following = await _context.Users
-            .Include(u => u.Followers)
-            .FirstOrDefaultAsync(u => u.Id == followingId);
+        var following = await _context.Users.Include(u => u.Followers).FirstOrDefaultAsync(u => u.Id == followingId);
         if (following == null)
             return NotFound();
         if (await _context.Follows.AnyAsync(f => f.FollowerId == follower.Id && f.FollowingId == followingId))
@@ -159,8 +144,7 @@ public class PublicationController : Controller
 
         if (following == null)
             return NotFound();
-        var follow = await _context.Follows
-            .FirstOrDefaultAsync(f => f.FollowerId == follower.Id && f.FollowingId == followingId);
+        var follow = await _context.Follows.FirstOrDefaultAsync(f => f.FollowerId == follower.Id && f.FollowingId == followingId);
 
         if (follow == null)
             return BadRequest("You are not following this user.");
