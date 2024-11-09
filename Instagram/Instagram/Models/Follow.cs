@@ -1,4 +1,6 @@
-﻿namespace Instagram.Models;
+﻿using System;
+
+namespace Instagram.Models;
 
 public class Follow
 {

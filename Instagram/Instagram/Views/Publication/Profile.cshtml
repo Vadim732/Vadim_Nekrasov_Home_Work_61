@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "User profile";
+    var publications = ViewBag.Publications as List<Publication>;
 }
 
 <div class="mt-4">
@@ -32,4 +33,22 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="profile-card-container mt-3">
+    @if (publications != null && publications.Any())
+    {
+        foreach (var p in publications)
+        {
+            <div class="profile-card m-1" style="width: 18rem;">
+                <a asp-action="Details" asp-controller="Publication" asp-route-publicationId="@p.Id">
+                    <img src="@p.Image" class="card-img-top" alt="Publication image">
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <h4 class="text-dark text-center">There are no publications yet :с</h4>
+    }
 </div>

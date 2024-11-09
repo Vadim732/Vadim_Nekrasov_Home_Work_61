@@ -1,4 +1,7 @@
-﻿using Instagram.Models;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Instagram.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +25,9 @@ public class PublicationController : Controller
         User user = await _userManager.GetUserAsync(User);
         if (user != null)
         {
+            var userPublications = await _context.Publications.Where(p => p.UserId == user.Id).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
+            ViewBag.Publications = userPublications;
+            
             return View(user);
         }
 
@@ -38,6 +44,24 @@ public class PublicationController : Controller
 
         return View(publications);
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> Details(int publicationId)
+    {
+        var publication = await _context.Publications
+            .Include(p => p.User)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.User)
+            .FirstOrDefaultAsync(p => p.Id == publicationId);
+        
+        if (publication != null)
+        {
+            return View(publication);
+        }
+        
+        return NotFound("Publication not found.");
+    }
+
 
     [HttpGet]
     [Authorize]
@@ -130,8 +154,7 @@ public class PublicationController : Controller
         if (follower == null || follower.Id == followingId)
             return BadRequest("Invalid unfollow request.");
 
-        var following = await _context.Users
-            .Include(u => u.Followers)
+        var following = await _context.Users.Include(u => u.Followers)
             .FirstOrDefaultAsync(u => u.Id == followingId);
 
         if (following == null)

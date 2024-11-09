@@ -1,12 +1,12 @@
-﻿@model Instagram.ViewModels.EditViewModel
+@model Instagram.ViewModels.EditViewModel
 
 @{
-    ViewBag.Title = "Edit Profile";
+    ViewBag.Title = "Edit user";
 }
 
 <div class="bg-dark text-center pt-5 pb-4 border-radius-1">
-    <h3 class="text-white mb-5">Fill out the form to edit your account details</h3>
-    <form asp-action="Edit" asp-controller="Account" asp-anti-forgery="true">
+    <h3 class="text-white mb-5">Fill out the form to edit user profile</h3>
+    <form asp-action="UserEdit" asp-controller="Account" asp-anti-forgery="true">
         <div asp-validation-summary="ModelOnly" class="text-error"></div>
         <div class="form_row mb-3">
             <label for="" class="col-4">
