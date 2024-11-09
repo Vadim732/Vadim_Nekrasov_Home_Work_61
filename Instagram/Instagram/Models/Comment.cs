@@ -13,5 +13,5 @@ public class Comment
     public int PublicationId { get; set; }
     public Publication Publication { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
 }

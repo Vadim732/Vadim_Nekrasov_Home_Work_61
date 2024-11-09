@@ -61,4 +61,33 @@ public class PublicationController : Controller
 
         return View(publication);
     }
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> ToggleLike(int publicationId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login", "Account");
+
+        var publication = await _context.Publications
+            .Include(p => p.Likes)
+            .FirstOrDefaultAsync(p => p.Id == publicationId);
+
+        if (publication == null) return NotFound();
+
+        var existingLike = publication.Likes.FirstOrDefault(l => l.UserId == user.Id);
+        if (existingLike != null)
+        {
+            publication.Likes.Remove(existingLike);
+            publication.LikeCount--;
+        }
+        else
+        {
+            publication.Likes.Add(new Like { UserId = user.Id, PostId = publicationId , CreatedAt = DateTime.UtcNow});
+            publication.LikeCount++;
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Index");
+    }
+
 }

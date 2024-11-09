@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Instagram.Migrations
 {
     [DbContext(typeof(InstagramContext))]
-    [Migration("20241108152138_addedUserPublicationAndLikeAndCommentsAndFollowModel")]
-    partial class addedUserPublicationAndLikeAndCommentsAndFollowModel
+    [Migration("20241109072052_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,8 +84,11 @@ namespace Instagram.Migrations
 
             modelBuilder.Entity("Instagram.Models.Like", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
