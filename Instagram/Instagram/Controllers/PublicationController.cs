@@ -23,11 +23,24 @@ public class PublicationController : Controller
         if (user != null)
         {
             var userPublications = await _context.Publications.Where(p => p.UserId == user.Id).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
+            ViewBag.Publications = userPublications;
             
             return View(user);
         }
 
         return RedirectToAction("Login", "Account");
+    }
+
+    public async Task<IActionResult> UserProfile(int userId)
+    {
+        var user = await _context.Users.Include(u => u.Publications).ThenInclude(p => p.Comments).ThenInclude(c => c.User).FirstOrDefaultAsync(u => u.Id == userId);
+        if (user != null)
+        {
+            ViewBag.Publications = user.Publications;
+            return View(user);
+        }
+
+        return NotFound();
     }
     
     public async Task<IActionResult> Index()

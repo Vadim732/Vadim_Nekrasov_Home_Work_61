@@ -1,0 +1,54 @@
+﻿@model User
+
+@{
+    ViewBag.Title = "Profile of the selected user";
+    var publications = ViewBag.Publications as List<Publication>;
+}
+
+<div class="mt-4">
+    <div class="row align-items-center">
+        <div class="col-md-3 text-center">
+            <img src="@Model.Avatar" class="img-thumbnail avatar-block rounded-circle" alt="User avatar">
+        </div>
+        <div class="col-md-9">
+            <div class="d-flex align-items-center mb-2">
+                <h2 class="me-3">@Model.UserName</h2>
+                <a asp-action="Follow" asp-route-followingId="@Model.Id" class="btn btn-primary me-2">Follow</a>
+                <a asp-action="Unfollow" asp-route-followingId="@Model.Id" class="btn btn-primary">Unfollow</a>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="me-4">
+                    <strong>@Model.Publications.Count</strong> publications
+                </div>
+                <div class="me-4">
+                    <strong>@Model.FollowersCount</strong> subscribers
+                </div>
+                <div>
+                    <strong>@Model.FollowingCount</strong> subscriptions
+                </div>
+            </div>
+            <div>
+                <strong>@Model.Name</strong>
+                <p>@Model.AboutUser</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="profile-card-container mt-3">
+    @if (publications != null && publications.Any())
+    {
+        foreach (var p in publications)
+        {
+            <div class="profile-card m-1" style="width: 18rem;">
+                <a asp-action="Details" asp-controller="Publication" asp-route-publicationId="@p.Id">
+                    <img src="@p.Image" class="card-img-top" alt="Publication image">
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <h4 class="text-dark text-center">There are no publications yet :с</h4>
+    }
+</div>

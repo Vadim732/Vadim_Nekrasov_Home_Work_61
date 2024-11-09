@@ -7,15 +7,10 @@
 
 <div class="card my-3">
     <div class="card-header">
-        <h5 class="card-title">@Model.User.UserName</h5>
-        <form asp-action="Follow" method="post">
-            <input type="hidden" name="followingId" value="@Model.UserId" />
-            <button type="submit" class="btn btn-primary">Follow</button>
-        </form>
-        <form asp-action="Unfollow" method="post">
-            <input type="hidden" name="followingId" value="@Model.UserId" />
-            <button type="submit" class="btn btn-primary">Unfollow</button>
-        </form>
+        <a asp-action="UserProfile" asp-controller="Publication" asp-route-userId="@Model.User.Id" class="text-dark text-decoration-none d-flex align-items-center">
+            <img src="@Model.User.Avatar" alt="User avatar" class="rounded-circle me-2 post-user-avatar">
+            <h5 class="card-title mb-0">@Model.User.UserName</h5>
+        </a>
     </div>
     <img src="@Model.Image" class="card-img-top" alt="Publication image">
     <div class="card-body">

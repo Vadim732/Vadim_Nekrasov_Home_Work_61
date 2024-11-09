@@ -8,17 +8,10 @@
 {
     <div class="card my-3">
         <div class="card-header">
-            <h5 class="card-title">@a.User.UserName</h5>
-            <div class="d-inline">
-                <form asp-action="Follow" method="post" class="d-inline">
-                    <input type="hidden" name="followingId" value="@a.UserId" />
-                    <button type="submit" class="btn btn-primary">Follow</button>
-                </form>
-                <form asp-action="Unfollow" method="post" class="d-inline">
-                    <input type="hidden" name="followingId" value="@a.UserId" />
-                    <button type="submit" class="btn btn-primary">Unfollow</button>
-                </form>
-            </div>
+            <a asp-action="UserProfile" asp-controller="Publication" asp-route-userId="@a.User.Id" class="text-dark text-decoration-none d-flex align-items-center">
+                <img src="@a.User.Avatar" alt="User avatar" class="rounded-circle me-2 post-user-avatar">
+                <h5 class="card-title mb-0">@a.User.UserName</h5>
+            </a>
         </div>
         <img src="@a.Image" class="card-img-top" alt="Publication image">
         <div class="card-body">
