@@ -32,6 +32,8 @@ public class PublicationController : Controller
     {
         var publications = await _context.Publications
             .Include(p => p.User)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.User)
             .ToListAsync();
 
         return View(publications);
@@ -148,5 +150,33 @@ public class PublicationController : Controller
 
         return RedirectToAction("Profile", new { userId = followingId });
     }
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddComment(int publicationId, string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return BadRequest("Comment text cannot be empty.");
 
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login", "Account");
+        var publication = await _context.Publications
+            .FirstOrDefaultAsync(p => p.Id == publicationId);
+
+        if (publication == null)
+            return NotFound("Publication not found.");
+
+        var comment = new Comment
+        {
+            Text = text,
+            UserId = user.Id,
+            PublicationId = publicationId,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        publication.Comments.Add(comment);
+        publication.CommentCount++;
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Index");
+    }
 }
