@@ -30,13 +30,16 @@ public class PublicationController : Controller
     
     public async Task<IActionResult> Index()
     {
-        List<Publication> publications = await _context.Publications.ToListAsync();
+        var publications = await _context.Publications
+            .Include(p => p.User)
+            .ToListAsync();
+
         return View(publications);
     }
 
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> Create()
+    public IActionResult Create()
     {
         return View();
     }
@@ -49,10 +52,10 @@ public class PublicationController : Controller
         {
             var creator = await _userManager.GetUserAsync(User);
             publication.UserId = creator.Id;
-            publication.CreatedAt = DateTime.Now;
+            publication.CreatedAt = DateTime.UtcNow;
 
             _context.Add(publication);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
