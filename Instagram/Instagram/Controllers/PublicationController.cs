@@ -23,7 +23,6 @@ public class PublicationController : Controller
         if (user != null)
         {
             var userPublications = await _context.Publications.Where(p => p.UserId == user.Id).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
-            ViewBag.Publications = userPublications;
             
             return View(user);
         }
@@ -186,4 +185,23 @@ public class PublicationController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }
+    [Authorize]
+    public async Task<IActionResult> FollowedPublications()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login", "Account");
+        var followedUserIds = await _context.Follows
+            .Where(f => f.FollowerId == user.Id)
+            .Select(f => f.FollowingId)
+            .ToListAsync();
+        var followedPublications = await _context.Publications
+            .Where(p => followedUserIds.Contains(p.UserId))
+            .Include(p => p.User)
+            .Include(p => p.Comments)
+            .ThenInclude(c => c.User)
+            .ToListAsync();
+
+        return View(followedPublications);
+    }
+
 }
