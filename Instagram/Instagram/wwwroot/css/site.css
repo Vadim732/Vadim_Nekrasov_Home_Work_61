@@ -62,3 +62,18 @@ body {
   width: 2.6em;
   height: 2.6em;
 }
+
+.comment-block{
+  background-color: #fcfcfc;
+}
+
+.post-description-text{
+  font-size: 1.2em;
+  margin-left: 0.6em;
+  margin-top: 0.6em;
+}
+
+.comment-user-avatar{
+  width: 1.9em;
+  height: 1.9em;
+}
