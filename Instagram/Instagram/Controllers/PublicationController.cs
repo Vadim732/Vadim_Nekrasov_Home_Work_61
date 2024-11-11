@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Instagram.Controllers;
 
@@ -17,7 +18,7 @@ public class PublicationController : Controller
         _userManager = userManager;
     }
     
-    public async Task<IActionResult> Profile()
+    /*public async Task<IActionResult> Profile()
     {
         User user = await _userManager.GetUserAsync(User);
         if (user != null)
@@ -29,20 +30,35 @@ public class PublicationController : Controller
         }
 
         return RedirectToAction("Login", "Account");
-    }
+    }*/
 
-    public async Task<IActionResult> UserProfile(int userId)
+    public async Task<IActionResult> Profile(int? userId)
     {
-        var user = await _context.Users.Include(u => u.Publications).ThenInclude(p => p.Comments).ThenInclude(c => c.User).FirstOrDefaultAsync(u => u.Id == userId);
+
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            
+            userId = int.Parse(currentUserId);
+        }
+
+        var user = await _context.Users
+            .Include(u => u.Publications)
+                .ThenInclude(p => p.Comments)
+                .ThenInclude(c => c.User)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
         if (user != null)
         {
             ViewBag.Publications = user.Publications;
+            ViewBag.currentUserId = currentUserId;
             return View(user);
         }
 
         return NotFound();
     }
-    
+
+
     public async Task<IActionResult> Index()
     {
         var publications = await _context.Publications.Include(p => p.User).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();

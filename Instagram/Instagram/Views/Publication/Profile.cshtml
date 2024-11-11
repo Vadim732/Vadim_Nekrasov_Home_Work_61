@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "User profile";
     var publications = ViewBag.Publications as List<Publication>;
+    var currentUserId = int.Parse(ViewBag.currentUserId);
 }
 
 <div class="mt-4">
@@ -13,8 +14,14 @@
         <div class="col-md-9">
             <div class="d-flex align-items-center mb-2">
                 <h2 class="me-3">@Model.UserName</h2>
-                <a asp-action="Edit" asp-controller="Account" asp-route-userId="@Model.Id" class="btn btn-outline-secondary">Edit profile</a>
-                <a class="btn btn-outline-danger ml-1" asp-controller="Account" asp-action="Logout">Logout</a>
+                @if(Model.Id == currentUserId )
+                {
+                    <a asp-action="Edit" asp-controller="Account" asp-route-userId="@ViewBag.currentUserId" class="btn btn-outline-secondary">Edit profile</a>
+                    <a class="btn btn-outline-danger ml-1" asp-controller="Account" asp-action="Logout">Logout</a>
+                } else
+                {
+                    <a class="btn btn-outline-success ml-1" asp-controller="Account" asp-action="Follow">Follow</a>
+                }
             </div>
             <div class="d-flex mb-3">
                 <div class="me-4">
