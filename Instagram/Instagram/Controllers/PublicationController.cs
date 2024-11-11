@@ -17,21 +17,7 @@ public class PublicationController : Controller
         _context = context;
         _userManager = userManager;
     }
-    
-    /*public async Task<IActionResult> Profile()
-    {
-        User user = await _userManager.GetUserAsync(User);
-        if (user != null)
-        {
-            var userPublications = await _context.Publications.Where(p => p.UserId == user.Id).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
-            ViewBag.Publications = userPublications;
-            
-            return View(user);
-        }
-
-        return RedirectToAction("Login", "Account");
-    }*/
-
+    [Authorize]
     public async Task<IActionResult> Profile(int? userId)
     {
         var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -228,6 +214,7 @@ public class PublicationController : Controller
             .Include(p => p.User)
             .Include(p => p.Comments)
             .ThenInclude(c => c.User)
+            .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
 
         return View(followedPublications);

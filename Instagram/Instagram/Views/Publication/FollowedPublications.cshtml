@@ -1,46 +1,80 @@
 @model List<Publication>
 
-<h2>Posts from Followed Users</h2>
-
-@foreach (var publication in Model)
-{
-    <div class="card my-3">
-        <div class="card-header">
-            <h5 class="card-title">@publication.User.UserName</h5>
-        </div>
-        <img src="@publication.Image" class="card-img-top" alt="Publication image">
-        <div class="card-body">
-            <div class="d-flex align-items-center mb-2">
-                <form asp-action="ToggleLike" method="post">
-                    <input type="hidden" name="publicationId" value="@publication.Id" />
-                    <button type="submit" class="btn btn-light me-2">
-                        <a class="btn btn-success">Like</a> @publication.LikeCount
-                    </button>
-                </form>
-                <button class="btn btn-light">
-                    <a class="btn btn-success">Comment</a> @publication.CommentCount
-                </button>
-            </div>
-
-            <p class="card-text">@publication.Description</p>
-            <small class="text-muted">Created: @publication.CreatedAt.ToString("dd MMM yyyy")</small>
-            <div class="mt-3">
-                <h6>Comments:</h6>
-                @foreach (var comment in publication.Comments)
-                {
-                <div>
-                    <strong>@comment.User.UserName:</strong> @comment.Text
-                    <small class="text-muted">(@comment.CreatedAt.ToString("dd MMM yyyy HH:mm"))</small>
-                </div>
-                }
-                <form asp-action="AddComment" method="post">
-                    <input type="hidden" name="publicationId" value="@publication.Id" />
-                    <div class="form-group mt-2">
-                        <textarea name="text" class="form-control" placeholder="Add a comment..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
-                </form>
-            </div>
-        </div>
-    </div>
+@{
+    ViewBag.Title = "Page of publications - Subscriptions";
 }
+<div class="container">
+    @if (Model == null || !Model.Any())
+    {
+        <h2>The users you are subscribed to do not have publications yet, or you do not have subscriptions yet</h2>
+    }
+    else
+    {
+        <h2>Posts from Followed Users</h2>
+
+        @foreach (var a in Model)
+        {
+            <div class="card my-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <a asp-action="Profile" asp-controller="Publication" asp-route-userId="@a.User.Id" class="text-dark text-decoration-none d-flex align-items-center">
+                        <img src="@a.User.Avatar" alt="User avatar" class="rounded-circle me-2 post-user-avatar">
+                        <h5 class="card-title mb-0">@a.User.UserName</h5>
+                    </a>
+                    <small class="text-muted ms-auto">Created: @a.CreatedAt.ToString("dd MMM yyyy")</small>
+                </div>
+                <img src="@a.Image" class="card-img-top" alt="Publication image">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <form asp-action="ToggleLike" method="post" class="me-2">
+                            <input type="hidden" name="publicationId" value="@a.Id"/>
+                            <button type="submit" class="btn btn-success">
+                                &#9829; Like <strong>@a.LikeCount</strong>
+                            </button>
+                        </form>
+                        <button class="btn btn-light mb-0" data-bs-toggle="modal" data-bs-target="#commentModal-@a.Id">
+                            &#128172; Comment <strong>@a.CommentCount</strong>
+                        </button>
+                    </div>
+                    <p class="card-text post-description-text">@a.Description</p>
+                    <div class="mt-3 comment-block">
+                        <h5 class="text-center">Comments:</h5>
+                        @foreach (var comment in a.Comments)
+                        {
+                            <div class="d-flex align-items-center mb-2">
+                                <a asp-action="Profile" asp-controller="Publication" asp-route-userId="@comment.User.Id" class="text-dark text-decoration-none d-flex align-items-center">
+                                    <img src="@comment.User.Avatar" alt="User avatar" class="rounded-circle me-2 comment-user-avatar">
+                                    <p class="mb-0">
+                                        <strong>@comment.User.UserName: </strong> @comment.Text
+                                    </p>
+                                </a>
+                                <small class="text-secondary ms-auto">(@comment.CreatedAt.ToString("dd MMM yyyy HH:mm"))</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="commentModal-@a.Id" tabindex="-1" aria-labelledby="commentModalLabel-@a.Id" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="commentModalLabel-@a.Id">Add a comment</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body bg-dark">
+                            <form asp-action="AddComment" method="post">
+                                <input type="hidden" name="publicationId" value="@a.Id"/>
+                                <div class="form-group mt-2">
+                                    <textarea name="text" class="form-control" placeholder="Enter your comment..." required></textarea>
+                                </div>
+                                <div class="d-flex justify-content-center mt-3">
+                                    <button type="submit" class="btn btn-outline-light w-50">Send</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
