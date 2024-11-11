@@ -6,6 +6,7 @@ using Instagram.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Instagram.Controllers;
@@ -247,7 +248,26 @@ public class AccountController : Controller
         return View(model);
     }
 
-    public async Task<IActionResult> Logout()
+
+public async Task<IActionResult> Search(string query)
+{
+    if (string.IsNullOrWhiteSpace(query))
+    {
+        return View("SearchResults", new List<User>());
+    }
+
+    var users = await _context.Users
+        .Where(u => u.UserName.Contains(query) ||
+                    u.Email.Contains(query) ||
+                    u.Name.Contains(query) ||
+                    u.AboutUser.Contains(query))
+        .ToListAsync();
+
+    return View("SearchResults", users);
+}
+
+
+public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login");

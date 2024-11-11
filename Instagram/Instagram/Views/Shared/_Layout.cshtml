@@ -26,13 +26,22 @@
                     <li class="nav-item">
                         <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Index">Recommendations</a>
                     </li>
+                        
+
                 </ul>
                 <ul class="navbar-nav d-flex">
                     @if (User.Identity.IsAuthenticated)
                     {
+                            <li>
+                                <form asp-action="Search" asp-controller="Account" method="get" class="d-flex">
+                                    <input type="text" name="query" class="form-control me-2" placeholder="Search users..." aria-label="Search" required>
+                                    <button class="btn btn-outline-success" type="submit">Search</button>
+                                </form>
+                            </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Profile">Profile</a>
                         </li>
+                            
                         @if (User.IsInRole("admin"))
                         {
                             <li class="nav-item">

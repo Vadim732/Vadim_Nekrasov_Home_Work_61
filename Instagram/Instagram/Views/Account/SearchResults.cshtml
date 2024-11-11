@@ -1,0 +1,27 @@
+﻿@model IEnumerable<User>
+
+@{
+    ViewBag.Title = "Search Results";
+}
+
+<h2>Search Results</h2>
+
+@if (!Model.Any())
+{
+    <p>No users found.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var user in Model)
+        {
+            <li class="list-group-item">
+                <a asp-action="Profile" asp-controller="Publication" asp-route-id="@user.Id">
+                    <img src="@user.Avatar" class="rounded-circle me-2" width="40" height="40" alt="User avatar">
+                    <strong>@user.UserName</strong> (@user.Name)
+                </a>
+                <p class="mb-0">@user.AboutUser</p>
+            </li>
+        }
+    </ul>
+}
