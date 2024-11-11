@@ -34,24 +34,24 @@ public class PublicationController : Controller
 
     public async Task<IActionResult> Profile(int? userId)
     {
-
-        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         if (userId == null)
         {
-            
-            userId = int.Parse(currentUserId);
+            userId = currentUserId;
         }
 
         var user = await _context.Users
             .Include(u => u.Publications)
-                .ThenInclude(p => p.Comments)
-                .ThenInclude(c => c.User)
+            .ThenInclude(p => p.Comments)
+            .ThenInclude(c => c.User)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user != null)
         {
             ViewBag.Publications = user.Publications;
             ViewBag.currentUserId = currentUserId;
+            var isFollowing = await _context.Follows.AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == user.Id);
+            ViewBag.IsFollowing = isFollowing;
             return View(user);
         }
 
