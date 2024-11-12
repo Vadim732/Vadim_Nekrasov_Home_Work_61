@@ -7,7 +7,8 @@ namespace Instagram.Models;
 public class Publication
 {
     public int Id { get; set; }
-    public string? Image { get; set; }
+    [Required]
+    public string Image { get; set; }
     [Required]
     public string Description { get; set; }
     

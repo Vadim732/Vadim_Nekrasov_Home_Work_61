@@ -316,5 +316,46 @@ public class PublicationController : Controller
 
         return RedirectToAction("Index");
     }
+    
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> DeletePost(int publicationId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            var publication = await _context.Publications.FirstOrDefaultAsync(p => p.Id == publicationId && p.UserId == user.Id);
 
+            if (publication != null)
+            {
+                return View(publication);
+            }
+            
+            return NotFound();
+        }
+        
+        return RedirectToAction("Login", "Account");
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeletePostConfirmed(int publicationId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            var publication = await _context.Publications.FirstOrDefaultAsync(p => p.Id == publicationId && p.UserId == user.Id);
+            if (publication != null)
+            {
+                _context.Publications.Remove(publication);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+
+            return NotFound();
+        }
+        
+        return RedirectToAction("Login", "Account");
+    }
 }
