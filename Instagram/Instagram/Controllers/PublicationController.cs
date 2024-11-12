@@ -31,6 +31,10 @@ public class PublicationController : Controller
             .ThenInclude(p => p.Comments)
             .ThenInclude(c => c.User)
             .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound($"Пользователь не найден.");
+        }
 
         if (user != null)
         {
