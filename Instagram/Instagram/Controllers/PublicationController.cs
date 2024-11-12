@@ -47,6 +47,11 @@ public class PublicationController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            ViewBag.CurrentUserId = user.Id;
+        }
         var publications = await _context.Publications.Include(p => p.User).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
 
         return View(publications);
@@ -55,6 +60,11 @@ public class PublicationController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int publicationId)
     {
+        var user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            ViewBag.CurrentUserId = user.Id;
+        }
         var publication = await _context.Publications.Include(p => p.User).Include(p => p.Comments).ThenInclude(c => c.User).FirstOrDefaultAsync(p => p.Id == publicationId);
         
         if (publication != null)
@@ -204,6 +214,10 @@ public class PublicationController : Controller
     public async Task<IActionResult> FollowedPublications()
     {
         var user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            ViewBag.CurrentUserId = user.Id;
+        }
         if (user == null) return RedirectToAction("Login", "Account");
         var followedUserIds = await _context.Follows
             .Where(f => f.FollowerId == user.Id)
@@ -266,4 +280,41 @@ public class PublicationController : Controller
 
         return View(postEdit);
     }
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeleteComment(int commentId)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) 
+            return RedirectToAction("Login", "Account");
+
+        var comment = await _context.Comments
+            .Include(c => c.Publication)
+            .FirstOrDefaultAsync(c => c.Id == commentId && c.UserId == user.Id);
+
+        if (comment == null) 
+            return BadRequest("Comment not found or you do not have permission to delete this comment.");
+
+        _context.Comments.Remove(comment);
+        comment.Publication.CommentCount--;
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Details", new { publicationId = comment.PublicationId });
+    }
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> EditComment(int commentId, string newText)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login", "Account");
+        var comment = await _context.Comments.FindAsync(commentId);
+        if (comment == null) return NotFound();
+        if (comment.UserId != user.Id)
+            return Forbid("You are not authorized to edit this comment.");
+        comment.Text = newText;
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
+
 }
