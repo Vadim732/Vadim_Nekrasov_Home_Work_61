@@ -77,3 +77,7 @@ body {
   width: 1.9em;
   height: 1.9em;
 }
+
+.ml-2 {
+  margin-left: 1.4em;
+}

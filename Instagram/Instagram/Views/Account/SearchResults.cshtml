@@ -4,24 +4,24 @@
     ViewBag.Title = "Search Results";
 }
 
-<h2>Search Results</h2>
-
-@if (!Model.Any())
-{
-    <p>No users found.</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var user in Model)
-        {
-            <li class="list-group-item">
-                <a asp-action="Profile" asp-controller="Publication" asp-route-userId="@user.Id">
-                    <img src="@user.Avatar" class="rounded-circle me-2" width="40" height="40" alt="User avatar">
-                    <strong>@user.UserName</strong> (@user.Name)
-                </a>
-                <p class="mb-0">@user.AboutUser</p>
-            </li>
-        }
-    </ul>
-}
+<div class="bg-dark text-white pt-3 pb-4 border-radius-1">
+    <h2 class="mb-3 text-center">Search results:</h2>
+    @if (!Model.Any())
+    {
+        <h4 class="text-center">No users found :c</h4>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var user in Model)
+            {
+                <li class="list-group-item">
+                    <a asp-action="Profile" asp-controller="Publication" asp-route-userId="@user.Id" class="text-decoration-none">
+                        <img src="@user.Avatar" class="rounded-circle me-2" width="40" height="40" alt="User avatar">
+                        <strong class="text-dark">@user.UserName</strong>
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+</div>
