@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace Instagram.Controllers;
@@ -11,11 +12,13 @@ public class PublicationController : Controller
 {
     private readonly InstagramContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly ILogger<PublicationController> _logger;
 
-    public PublicationController(InstagramContext context, UserManager<User> userManager)
+    public PublicationController(InstagramContext context, UserManager<User> userManager, ILogger<PublicationController> logger)
     {
         _context = context;
         _userManager = userManager;
+        _logger = logger;
     }
     [Authorize]
     public async Task<IActionResult> Profile(int? userId)
@@ -52,15 +55,39 @@ public class PublicationController : Controller
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user != null)
+        if (user == null)
         {
-            ViewBag.CurrentUserId = user.Id;
+            return RedirectToAction("Login", "Account");
         }
-        var publications = await _context.Publications.Include(p => p.User).Include(p => p.Comments).ThenInclude(c => c.User).ToListAsync();
+
+        ViewBag.CurrentUserId = user.Id;
+
+        List<Publication> publications;
+        try
+        {
+            publications = await _context.Publications
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.User)
+                .ToListAsync();
+
+            if (publications == null || !publications.Any())
+            {
+                ViewBag.Message = "No publications found.";
+                return View(new List<Publication>()); 
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving publications.");
+            ViewBag.ErrorMessage = "An error occurred while loading publications.";
+            return View(new List<Publication>()); 
+        }
 
         return View(publications);
     }
-    
+
+
     [HttpGet]
     public async Task<IActionResult> Details(int publicationId)
     {
