@@ -278,7 +278,7 @@ public class PublicationController : Controller
                 return View(publication);
             }
             
-            return NotFound();
+            return RedirectToAction("AccessDenied", "Account");
         }
         
         return RedirectToAction("Login", "Account");
@@ -303,7 +303,7 @@ public class PublicationController : Controller
                     return RedirectToAction("Details", new { publicationId = postEdit.Id });
                 }
                 
-                return NotFound();
+                return RedirectToAction("AccessDenied", "Account");
             }
 
             return RedirectToAction("Login", "Account");
@@ -362,7 +362,7 @@ public class PublicationController : Controller
                 return View(publication);
             }
             
-            return NotFound();
+            return RedirectToAction("AccessDenied", "Account");
         }
         
         return RedirectToAction("Login", "Account");
@@ -384,12 +384,9 @@ public class PublicationController : Controller
                 return RedirectToAction("Index");
             }
 
-            return NotFound();
+            return RedirectToAction("AccessDenied", "Account");
         }
         
         return RedirectToAction("Login", "Account");
     }
-
-    
-
 }
