@@ -43,15 +43,6 @@
                         <li class="nav-item">
                                 <a class="nav-link text-white" href="@Url.Action("Profile", "Publication", new { userId = @ViewBag.currentUserId })">Profile</a>
                         </li>
-                            
-
-                            
-                        @if (User.IsInRole("admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Account" asp-action="Index">All users</a>
-                            </li>
-                        }
                     }
                     else
                     {

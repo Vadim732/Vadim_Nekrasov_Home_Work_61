@@ -24,13 +24,6 @@ public class AccountController : Controller
         _context = context;
     }
     
-    [HttpGet]
-    [Authorize(Roles = "admin")]
-    public IActionResult Index()
-    {
-        List<User> users = _userManager.Users.ToList();
-        return View(users);
-    }
     
     [HttpGet]
     public IActionResult Register()
@@ -153,96 +146,6 @@ public class AccountController : Controller
     
         return View(model);
     }
-
-    [HttpPost]
-    [Authorize(Roles = "admin")]
-    public async Task<IActionResult> Delete(int userId)
-    {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-    
-        if (user != null)
-        {
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return RedirectToAction("Index", "Account");
-            }
-            else
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-        }
-        else
-        {
-            return NotFound();
-        }
-        
-        List<User> users = _userManager.Users.ToList();
-        return View("Index", users);
-    }
-    
-    [HttpGet]
-    [Authorize(Roles = "admin")]
-    public async Task<IActionResult> UserEdit(int userId)
-    {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user != null)
-        {
-            var model = new EditViewModel
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Avatar = user.Avatar,
-                Name = user.Name,
-                AboutUser = user.AboutUser,
-                PhoneNumber = user.PhoneNumber,
-                Gender = user.Gender
-            };
-
-            return View(model);
-        }
-
-        return NotFound();
-    }
-
-    [HttpPost]
-    [Authorize(Roles = "admin")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> UserEdit(int userId, EditViewModel model)
-    {
-        if (ModelState.IsValid)
-        {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user != null)
-            {
-                user.UserName = model.UserName;
-                user.Email = model.Email;
-                user.Avatar = model.Avatar;
-                user.Name = model.Name;
-                user.AboutUser = model.AboutUser;
-                user.PhoneNumber = model.PhoneNumber;
-                user.Gender = model.Gender;
-
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Account");
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-
-            return NotFound();
-        }
-
-        return View(model);
-    }
-
 
 public async Task<IActionResult> Search(string query)
 {

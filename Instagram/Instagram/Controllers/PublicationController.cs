@@ -359,15 +359,17 @@ public class PublicationController : Controller
     public async Task<IActionResult> DeletePostConfirmed(int publicationId)
     {
         var user = await _userManager.GetUserAsync(User);
-        var publication = await _context.Publications.FirstOrDefaultAsync(p => p.Id == publicationId && p.UserId == user.Id);
-        if (publication != null)
+        var publication = await _context.Publications.FirstOrDefaultAsync(p => p.Id == publicationId);
+        if (publication == null)
         {
-            _context.Publications.Remove(publication);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Index");
+            return NotFound("Publication not found.");
         }
-
-        return RedirectToAction("AccessDenied", "Account");
+        if (publication.UserId != user.Id)
+        {
+            return RedirectToAction("AccessDenied", "Account");
+        }
+        _context.Publications.Remove(publication);
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Index");
     }
 }
