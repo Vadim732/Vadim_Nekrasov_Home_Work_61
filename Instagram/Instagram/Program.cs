@@ -14,6 +14,7 @@ builder.Services.AddDbContext<InstagramContext>(options => options.UseNpgsql(con
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
 var app = builder.Build();

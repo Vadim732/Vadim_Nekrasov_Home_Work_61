@@ -266,8 +266,13 @@ public async Task<IActionResult> Search(string query)
     return View("SearchResults", users);
 }
 
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
 
-public async Task<IActionResult> Logout()
+
+    public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Login");

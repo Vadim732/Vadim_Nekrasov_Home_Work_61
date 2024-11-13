@@ -389,4 +389,7 @@ public class PublicationController : Controller
         
         return RedirectToAction("Login", "Account");
     }
+
+    
+
 }
