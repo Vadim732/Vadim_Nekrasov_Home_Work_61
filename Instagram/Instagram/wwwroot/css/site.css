@@ -50,7 +50,6 @@ body {
 .profile-card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
 }
 
 .profile-card {
