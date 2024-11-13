@@ -20,13 +20,15 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Create">Add new post</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Index">Recommendations</a>
-                    </li>
-                        
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Create">Add new post</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Publication" asp-action="Index">Recommendations</a>
+                        </li>
+                    }
 
                 </ul>
                 <ul class="navbar-nav d-flex">

@@ -105,28 +105,23 @@ public class AccountController : Controller
     }
     
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Edit()
     {
         User user = await _userManager.GetUserAsync(User);
-        if (user != null)
+        var model = new EditViewModel
         {
-            var model = new EditViewModel
-            {
-                UserName = user.UserName,
-                Email = user.Email,
-                Avatar = user.Avatar,
-                Name = user.Name,
-                AboutUser = user.AboutUser,
-                PhoneNumber = user.PhoneNumber,
-                Gender = user.Gender
-            };
-            
-            return View(model);
-        }
-        
-        return RedirectToAction("Login", "Account");
+            UserName = user.UserName,
+            Email = user.Email,
+            Avatar = user.Avatar,
+            Name = user.Name,
+            AboutUser = user.AboutUser,
+            PhoneNumber = user.PhoneNumber,
+            Gender = user.Gender
+        };
+        return View(model);
     }
-
+    [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditViewModel model)
