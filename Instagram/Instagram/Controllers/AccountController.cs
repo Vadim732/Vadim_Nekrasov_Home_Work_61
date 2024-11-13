@@ -255,12 +255,12 @@ public async Task<IActionResult> Search(string query)
     {
         return View("SearchResults", new List<User>());
     }
-
+    query = query.ToLower();
     var users = await _context.Users
-        .Where(u => u.UserName.Contains(query) ||
-                    u.Email.Contains(query) ||
-                    u.Name.Contains(query) ||
-                    u.AboutUser.Contains(query))
+        .Where(u => u.UserName.ToLower().Contains(query) ||
+                    u.Email.ToLower().Contains(query) ||
+                    u.Name.ToLower().Contains(query) ||
+                    u.AboutUser.ToLower().Contains(query))
         .ToListAsync();
 
     return View("SearchResults", users);
