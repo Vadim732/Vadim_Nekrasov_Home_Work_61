@@ -80,3 +80,13 @@ body {
 .ml-2 {
   margin-left: 1.4em;
 }
+
+.fa-instagram {
+  margin-right: 0.4em;
+  font-size: 1.8em;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
