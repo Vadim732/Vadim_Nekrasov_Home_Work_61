@@ -24,6 +24,10 @@
             <label for="" class="col-4">
                 <input type="email" class="form-control" asp-for="Email" placeholder="Enter your email address...">
                 <span asp-validation-for="Email" class="text-error" />
+                @if (ViewBag.ErrorMessage != null)
+                {
+                <span class="text-error">@ViewBag.ErrorMessage</span>
+                }
             </label>
         </div>
         <div class="form_row mb-3">

@@ -34,7 +34,14 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            User user = new User()
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                ViewBag.ErrorMessage = "This email is already being used by another user.";
+                return View(model);
+            }
+
+            User user = new User
             {
                 UserName = model.UserName,
                 Email = model.Email,
@@ -121,6 +128,12 @@ public class AccountController : Controller
             User user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null && existingUser.Id != user.Id)
+                {
+                    ViewBag.ErrorMessage = "This email is already being used by another user.";
+                    return View(model);
+                }
                 user.UserName = model.UserName;
                 user.Email = model.Email;
                 user.Avatar = model.Avatar;
