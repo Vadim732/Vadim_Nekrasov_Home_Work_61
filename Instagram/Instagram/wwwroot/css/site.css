@@ -90,3 +90,7 @@ body {
   display: flex;
   align-items: center;
 }
+.fa-user{
+  margin-right: 0.4em;
+  font-size: 1.8em;
+}

@@ -325,6 +325,8 @@ public class PublicationController : Controller
     [Authorize]
     public async Task<IActionResult> EditComment(int commentId, string newText)
     {
+        if (string.IsNullOrWhiteSpace(newText))
+            return BadRequest("Comment text cannot be empty.");
         var user = await _userManager.GetUserAsync(User);
         var comment = await _context.Comments.FindAsync(commentId);
         if (comment == null) return NotFound();
