@@ -149,7 +149,7 @@ public class PublicationController : Controller
         }
 
         await _context.SaveChangesAsync();
-        return RedirectToAction("Index");
+        return Json(new { success = true, likeCount = publication.LikeCount });
     }
     [HttpPost]
     [Authorize]
@@ -177,7 +177,7 @@ public class PublicationController : Controller
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Profile", new { userId = followingId });
+        return Json(new { success = true, newFollowersCount = following.FollowersCount});
     }
 
     [HttpPost]
@@ -204,7 +204,7 @@ public class PublicationController : Controller
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction("Profile", new { userId = followingId });
+        return Json(new { success = true, newFollowersCount = following.FollowersCount});
     }
     [HttpPost]
     [Authorize]

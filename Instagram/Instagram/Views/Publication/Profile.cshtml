@@ -23,14 +23,14 @@
                 {
                     @if (ViewBag.IsFollowing)
                     {
-                        <form asp-action="Unfollow" asp-controller="Publication" method="post">
+                        <form asp-action="Unfollow" asp-controller="Publication" method="post" id="Unfollow">
                             <input type="hidden" name="followingId" value="@Model.Id"/>
                             <button type="submit" class="btn btn-outline-danger ml-1">Unfollow</button>
                         </form>
                     }
                     else
                     {
-                        <form asp-action="Follow" asp-controller="Publication" method="post">
+                        <form asp-action="Follow" asp-controller="Publication" method="post" id="Follow">
                             <input type="hidden" name="followingId" value="@Model.Id"/>
                             <button type="submit" class="btn btn-outline-success ml-1">Follow</button>
                         </form>
@@ -42,10 +42,10 @@
                     <strong>@Model.Publications.Count</strong> publications
                 </div>
                 <div class="me-4">
-                    <strong>@Model.FollowersCount</strong> subscribers
+                    <strong id="followersCount">@Model.FollowersCount</strong> subscribers
                 </div>
                 <div>
-                    <strong>@Model.FollowingCount</strong> subscriptions
+                    <strong id="followingCount">@Model.FollowingCount</strong> subscriptions
                 </div>
             </div>
             <div>
@@ -73,3 +73,64 @@
         <h4 class="text-dark text-center">There are no publications yet :с</h4>
     }
 </div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(document).on('submit', 'form#Follow', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                const followingId = form.find('input[name="followingId"]').val();
+                $.ajax({
+                    url: '@Url.Action("Follow", "Publication")',
+                    type: 'POST',
+                    data: { followingId: followingId },
+                    success: function (response) {
+                        if (response.success) {
+                            form.replaceWith(`
+                        <form asp-action="Unfollow" asp-controller="Publication" method="post" id="Unfollow">
+                            <input type="hidden" name="followingId" value="${followingId}" />
+                            <button type="submit" class="btn btn-outline-danger ml-1">Unfollow</button>
+                        </form>
+                    `);
+                            $('#followersCount').text(response.newFollowersCount);
+                        } else {
+                            console.error('Ошибка: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        console.error('Ошибка при подписке.');
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $(document).on('submit', 'form#Unfollow', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                const followingId = form.find('input[name="followingId"]').val();
+                $.ajax({
+                    url: '@Url.Action("Unfollow", "Publication")',
+                    type: 'POST',
+                    data: { followingId: followingId },
+                    success: function (response) {
+                        if (response.success) {
+                            form.replaceWith(`
+                        <form asp-action="Follow" asp-controller="Publication" method="post" id="Follow">
+                            <input type="hidden" name="followingId" value="${followingId}" />
+                            <button type="submit" class="btn btn-outline-success ml-1">Follow</button>
+                        </form>
+                    `);
+                            $('#followersCount').text(response.newFollowersCount);
+                        } else {
+                            console.error('Ошибка: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        console.error('Ошибка при отписке.');
+                    }
+                });
+            });
+        });
+    </script>
+}

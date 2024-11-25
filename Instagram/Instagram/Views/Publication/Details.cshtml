@@ -15,8 +15,8 @@
     <img src="@Model.Image" class="card-img-top" alt="Publication image">
     <div class="card-body">
         <div class="d-flex align-items-center mb-2">
-            <form asp-action="ToggleLike" method="post" class="me-2">
-                <input type="hidden" name="publicationId" value="@Model.Id" />
+            <form asp-action="ToggleLike" method="post" id="ToggleLike" class="me-2">
+                <input type="hidden" id="publicationId" name="publicationId" value="@Model.Id" />
                 <button type="submit" class="btn btn-success">
                     &#9829; Like <strong>@Model.LikeCount</strong>
                 </button>
@@ -100,3 +100,28 @@
         </div>
     </div>
 </div>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(document).on('submit', 'form[id="ToggleLike"]', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                const publicationId = form.find('input[id="publicationId"]').val();
+                $.ajax({
+                    url: '@Url.Action("ToggleLike")',
+                    type: 'POST',
+                    data: { publicationId: publicationId },
+                    success: function (response) {
+                        if (response.success) {
+                            form.find('button').html(`&#9829; Like <strong>${response.likeCount}</strong>`);
+                        }
+                    },
+                    error: function () {
+                        console.error('Ошибка при обработке лайка');
+                    },
+                });
+            });
+        });
+    </script>
+}
